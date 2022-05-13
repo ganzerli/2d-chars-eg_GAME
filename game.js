@@ -75,7 +75,7 @@ const WIDTH = 128;
 
 //  @   
 //  @   all grafics need to be dropped in this array
-const ELEMENTS_BUNCH = [/*[0,0,0,0]*/];
+let ELEMENTS_BUNCH = [/*[0,0,0,0]*/];
 
 //  @   
 //  @   if report needed
@@ -95,14 +95,17 @@ const char = createChar(0, 0);
 
 //  @   
 //  @   DEFINING OBJECTS
-let obj = {
-    x:0,
-    y:0,
-    sizeX:11,
+//          y           x
+let y_ = 10;
+const obj = {
+    x:1,
+    y:y_,
+    sizeX:4,
     sizeY:5,
     speedX:1,
-    speedY:1,
+    speedY:0,
     type:"0",
+    collision:false,
     get:function(){
         return {
             x:this.x , 
@@ -112,20 +115,24 @@ let obj = {
             grafic:this.grafic
         }
     },
-    grafic:[...char]
+    //         x   y   w   h    c             x   y   w   h    c           
+    grafic:[ [ 0+y_ , y_ , 2 , 5 , '>' ],[ y_+ 2 , y_+1 , 2 , 3 , '>' ] ]
 }
 
 // coordinates
-let obj2_= [WIDTH -4,0];
+//           x        y
 
-let obj2 = {
+let obj2_= [ WIDTH-4 , 0 ];
+
+const obj2 = {
     x:obj2_[0],
     y:obj2_[1],
     sizeX:4,
     sizeY:5,
-    speedX:0,
+    speedX:-1,
     speedY:1,
     type:"0",
+    collision:false,
     get:function(){
         return {
             x:this.x , 
@@ -139,11 +146,98 @@ let obj2 = {
     grafic:[[obj2_[0],obj2_[1] , 2 ,5,'2'], [obj2_[0]-1 , obj2_[1] +1 , 2 ,3,'2']],
 }
 
+
+
+
+const others = [];
+for (let i = 0; i < 1000; i + 2) {
+    const other = {
+        x:obj2_[0],
+        y:Math.floor(Math.random() * 4),
+        sizeX:4,
+        sizeY:5,
+        speedX:Math.floor(Math.random() * 4 * -1),
+        speedY:Math.floor(Math.random() * 4),
+        type:"0",
+        collision:false,
+        get:function(){
+            return {
+                x:this.x , 
+                y:this.y , 
+                sizeX:this.sizeX , 
+                sizeY:this.sizeY , 
+                grafic:this.grafic
+            }
+        },
+        //[x,y,w,h,'c']
+        grafic:[[obj2_[0],obj2_[1] , 2 ,5,'o'], [obj2_[0]-1 , obj2_[1] +1 , 2 ,3,'0']],
+    }
+    others.push(other);
+    i++;
+
+    const obj = {
+        x:0,
+        y:Math.floor(Math.random() * 4),
+        sizeX:4,
+        sizeY:5,
+        speedX:Math.floor(Math.random() * 4 * -1),
+        speedY:Math.floor(Math.random() * 4),
+        type:"0",
+        collision:false,
+        get:function(){
+            return {
+                x:this.x , 
+                y:this.y , 
+                sizeX:this.sizeX , 
+                sizeY:this.sizeY , 
+                grafic:this.grafic
+            }
+        },
+        //         x   y   w   h    c             x   y   w   h    c           
+        grafic:[ [ 0 , 0 , 2 , 5 , '>' ],[ 2 , 1 , 2 , 3 , '>' ] ]
+    }
+
+    others.push(obj);
+    i++
+}
+
+
+
+
+
+const ammo = [];
+for (let i = 0; i < 10000; i++) {
+    const other = {
+        x:obj2_[0],
+        y:Math.floor(Math.random() * 4),
+        sizeX:4,
+        sizeY:5,
+        speedX:Math.floor(Math.random() * 4 * -1),
+        speedY:Math.floor(Math.random() * 4),
+        type:"0",
+        collision:false,
+        grafic:[[ 0 , 0 , 1 , 1 , '#']]
+    }
+}
+
+
 //  @   
 //  @   CREATE OBJECTS ARRAY
 const OBJECTS=[];
+
+
+let i = 0;
+setInterval(()=>{
+    OBJECTS.push(others[i]);
+    i++;
+},400);
+
+
+
+
 OBJECTS.push(obj);
 OBJECTS.push(obj2);
+
 
 
 //  @
@@ -152,8 +246,11 @@ const CHAR = ' ';
 
 //  @
 //  @   SET FRAME RATE
-const FRAME_RATE = 60; // ms
+let FRAME_RATE = 30; // ms
 
+//  @
+//  @   COLLISION DETECTION
+let collision = false;
 
 //  @
 //  @   GAME LOOP
@@ -170,25 +267,28 @@ setInterval(()=>{
 
     //  // GUARDING FOR DIRECTION
 
-        
-
- 
-
         OBJECTS[i] = borders(x);
+        // modify obj.collision : true if found
+        
+        collisionDetection(i, OBJECTS);
+        
+        if(!OBJECTS[i].collision){
+    
+            REPORT = `${x.x + x.sizeX} = ${WIDTH} :: ${x.y + x.sizeY} = ${HEIGHT} :: COLLISION = ${collision} `;
+        //  @
+        //  @   SET POSITION TO OBJ.GRAFIC []
+            x.get().grafic.forEach(a => {
+                a[0] += x.speedX + x.speedY; // compensate \n chars
+                a[1] += x.speedY;
+                ELEMENTS_BUNCH.push(a);
+            });
 
-    
-    
-    
-    
-    
-        REPORT = `${x.x + x.sizeX} = ${WIDTH} :: ${x.y + x.sizeY} = ${HEIGHT} `;
-    //  @
-    //  @   SET POSITION TO OBJ.GRAFIC []
-        x.get().grafic.forEach(a =>{
-            a[0] += x.speedX + x.speedY; // compensate \n chars
-            a[1] += x.speedY;
-            ELEMENTS_BUNCH.push(a);
-        });
+        }else{
+            OBJECTS.splice(i, 1);
+            // refresh screen to get element away
+            //ELEMENTS_BUNCH = [];
+        }
+
 
     });
 
@@ -201,8 +301,7 @@ setInterval(()=>{
         CHAR
     );
     // CONSOLE.LOG() PRINTS THE WINDOW
-    console.log('\n',REPORT);
-
+   // console.log('\n',REPORT);
     console.log(result2.join(""));
 
 }, FRAME_RATE);
@@ -260,4 +359,35 @@ function borders( obj ) {
 
     return obj;
 
+}
+
+function collisionDetection( index , obj_arr ) {
+    let collision = false;
+    const el = obj_arr[index];
+    let row = false;
+    let column = false;
+
+
+    obj_arr.forEach((o,i)=>{
+        if(i != index){
+            // compare x
+            if ( (el.x + el.sizeX > o.x ) &&  ( el.x < o.x + o.sizeX  )  ) {
+                row = true;
+            }
+            if ( (el.y + el.sizeY > o.y ) &&  ( el.y < o.y + o.sizeY  )  ) {
+                column = true;
+            }
+        }
+
+        if (row && column) {
+            collision = true;
+            obj_arr[i].collision = true;
+            obj_arr[index].collision = true;
+            i = obj_arr.length;
+        }
+        row = false ; column = false;
+
+    });
+
+    return collision;
 }
