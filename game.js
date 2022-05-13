@@ -66,7 +66,7 @@ const print = (WIDTH, HEIGHT, positions, CHAR)=>{
 
 
 //  @   
-//  @   DEFINE VITAL VARIABLES
+//  @   DEFINE  VITAL   VARIABLES
 
 //  @   
 //  @   DEFINE SIZE OF THE FIELD    
@@ -80,14 +80,9 @@ let ELEMENTS_BUNCH = [/*[0,0,0,0]*/];
 //  @   
 //  @   if report needed
 let REPORT = "";
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 //  @   
 //  @   FUNCTIONS RETURNING GRAFICS FOR OBJECTS
-
 
 /// character
 const char = createChar(0, 0);
@@ -146,9 +141,6 @@ const obj2 = {
     grafic:[[obj2_[0],obj2_[1] , 2 ,5,'2'], [obj2_[0]-1 , obj2_[1] +1 , 2 ,3,'2']],
 }
 
-
-
-
 const others = [];
 for (let i = 0; i < 1000; i + 2) {
     const other = {
@@ -201,30 +193,9 @@ for (let i = 0; i < 1000; i + 2) {
     i++
 }
 
-
-
-
-
-const ammo = [];
-for (let i = 0; i < 10000; i++) {
-    const other = {
-        x:obj2_[0],
-        y:Math.floor(Math.random() * 4),
-        sizeX:4,
-        sizeY:5,
-        speedX:Math.floor(Math.random() * 4 * -1),
-        speedY:Math.floor(Math.random() * 4),
-        type:"0",
-        collision:false,
-        grafic:[[ 0 , 0 , 1 , 1 , '#']]
-    }
-}
-
-
 //  @   
 //  @   CREATE OBJECTS ARRAY
 const OBJECTS=[];
-
 
 let i = 0;
 setInterval(()=>{
@@ -232,13 +203,8 @@ setInterval(()=>{
     i++;
 },400);
 
-
-
-
 OBJECTS.push(obj);
 OBJECTS.push(obj2);
-
-
 
 //  @
 //  @   SET CHARACHTER FORMING BACKGROUND
@@ -311,7 +277,6 @@ setInterval(()=>{
 
 
 
-
 //  @
 //  @   USEFUL FUNCTIONS
 
@@ -342,7 +307,6 @@ function distances(obj, OBJ_ARR) {
     // first check difference from top, y, ..  then from left, x, adding them
 }
 
-
 function borders( obj ) {
     //`${x.x + x.sizeX} = ${WIDTH} :: ${x.y + x.sizeY} = ${HEIGHT} `;
 
@@ -366,7 +330,6 @@ function collisionDetection( index , obj_arr ) {
     const el = obj_arr[index];
     let row = false;
     let column = false;
-
 
     obj_arr.forEach((o,i)=>{
         if(i != index){
