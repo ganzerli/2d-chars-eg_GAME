@@ -1,4 +1,3 @@
-const readline = require('readline');
 
 const print = (WIDTH, HEIGHT, positions, CHAR)=>{
         let result = [];
@@ -66,7 +65,7 @@ const print = (WIDTH, HEIGHT, positions, CHAR)=>{
 
 
 //  @   
-//  @   DEFINE  VITAL   VARIABLES
+//  @   DEFINE VITAL VARIABLES
 
 //  @   
 //  @   DEFINE SIZE OF THE FIELD    
@@ -80,9 +79,14 @@ let ELEMENTS_BUNCH = [/*[0,0,0,0]*/];
 //  @   
 //  @   if report needed
 let REPORT = "";
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 //  @   
 //  @   FUNCTIONS RETURNING GRAFICS FOR OBJECTS
+
 
 /// character
 const char = createChar(0, 0);
@@ -90,62 +94,18 @@ const char = createChar(0, 0);
 
 //  @   
 //  @   DEFINING OBJECTS
-//          y           x
-let y_ = 10;
-const obj = {
-    x:1,
-    y:y_,
-    sizeX:4,
-    sizeY:5,
-    speedX:1,
-    speedY:0,
-    type:"0",
-    collision:false,
-    get:function(){
-        return {
-            x:this.x , 
-            y:this.y , 
-            sizeX:this.sizeX , 
-            sizeY:this.sizeY , 
-            grafic:this.grafic
-        }
-    },
-    //         x   y   w   h    c             x   y   w   h    c           
-    grafic:[ [ 0+y_ , y_ , 2 , 5 , '>' ],[ y_+ 2 , y_+1 , 2 , 3 , '>' ] ]
-}
 
-// coordinates
-//           x        y
-
-let obj2_= [ WIDTH-4 , 0 ];
-
-const obj2 = {
-    x:obj2_[0],
-    y:obj2_[1],
-    sizeX:4,
-    sizeY:5,
-    speedX:-1,
-    speedY:1,
-    type:"0",
-    collision:false,
-    get:function(){
-        return {
-            x:this.x , 
-            y:this.y , 
-            sizeX:this.sizeX , 
-            sizeY:this.sizeY , 
-            grafic:this.grafic
-        }
-    },
-    //[x,y,w,h,'c']
-    grafic:[[obj2_[0],obj2_[1] , 2 ,5,'2'], [obj2_[0]-1 , obj2_[1] +1 , 2 ,3,'2']],
-}
+let x= WIDTH-4;
+let y;
 
 const others = [];
-for (let i = 0; i < 1000; i + 2) {
+for (let i = 0; i < 10000; i + 2) {
+    y = Math.floor(Math.random() * 10) * 3;
+    x = WIDTH - 4;
+    
     const other = {
-        x:obj2_[0],
-        y:Math.floor(Math.random() * 4),
+        x:x,
+        y:y,
         sizeX:4,
         sizeY:5,
         speedX:Math.floor(Math.random() * 4 * -1),
@@ -162,18 +122,20 @@ for (let i = 0; i < 1000; i + 2) {
             }
         },
         //[x,y,w,h,'c']
-        grafic:[[obj2_[0],obj2_[1] , 2 ,5,'o'], [obj2_[0]-1 , obj2_[1] +1 , 2 ,3,'0']],
+        grafic:[[x + y , y , 2 ,5,'o'], [x + y -1 , y+1 , 2 ,3,'0']],
     }
     others.push(other);
     i++;
 
-    const obj = {
-        x:0,
-        y:Math.floor(Math.random() * 4),
+    y = Math.floor(Math.random() * 10) * 3;
+    x = y +1; // adding \n chars
+    const fromLeft = {
+        x:x,
+        y:y,
         sizeX:4,
         sizeY:5,
-        speedX:Math.floor(Math.random() * 4 * -1),
-        speedY:Math.floor(Math.random() * 4),
+        speedX:Math.floor(Math.random() * 3) + 1,
+        speedY:Math.floor(Math.random() * 3) + 1,
         type:"0",
         collision:false,
         get:function(){
@@ -186,25 +148,25 @@ for (let i = 0; i < 1000; i + 2) {
             }
         },
         //         x   y   w   h    c             x   y   w   h    c           
-        grafic:[ [ 0 , 0 , 2 , 5 , '>' ],[ 2 , 1 , 2 , 3 , '>' ] ]
+        grafic:[ [ x , y , 2 , 5 , '>' ],[ x+3, y+1 , 2 , 3 , '>' ] ]
     }
 
-    others.push(obj);
+    others.push(fromLeft);
     i++
 }
+
 
 //  @   
 //  @   CREATE OBJECTS ARRAY
 const OBJECTS=[];
 
+
 let i = 0;
 setInterval(()=>{
     OBJECTS.push(others[i]);
     i++;
-},400);
+},200);
 
-OBJECTS.push(obj);
-OBJECTS.push(obj2);
 
 //  @
 //  @   SET CHARACHTER FORMING BACKGROUND
@@ -212,7 +174,7 @@ const CHAR = ' ';
 
 //  @
 //  @   SET FRAME RATE
-let FRAME_RATE = 30; // ms
+let FRAME_RATE = 60; // ms
 
 //  @
 //  @   COLLISION DETECTION
@@ -252,7 +214,6 @@ setInterval(()=>{
         }else{
             OBJECTS.splice(i, 1);
             // refresh screen to get element away
-            //ELEMENTS_BUNCH = [];
         }
 
 
@@ -269,11 +230,13 @@ setInterval(()=>{
     // CONSOLE.LOG() PRINTS THE WINDOW
    // console.log('\n',REPORT);
     console.log(result2.join(""));
+    ELEMENTS_BUNCH = [];
 
 }, FRAME_RATE);
 
 //  @
 //  @   END OF GAME LOOP
+
 
 
 
@@ -307,6 +270,7 @@ function distances(obj, OBJ_ARR) {
     // first check difference from top, y, ..  then from left, x, adding them
 }
 
+
 function borders( obj ) {
     //`${x.x + x.sizeX} = ${WIDTH} :: ${x.y + x.sizeY} = ${HEIGHT} `;
 
@@ -330,6 +294,7 @@ function collisionDetection( index , obj_arr ) {
     const el = obj_arr[index];
     let row = false;
     let column = false;
+
 
     obj_arr.forEach((o,i)=>{
         if(i != index){
